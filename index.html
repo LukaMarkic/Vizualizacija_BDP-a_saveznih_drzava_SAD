@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Manrope&family=Pathway+Extreme:wght@300&family=Poltawski+Nowy&display=swap");
+      @import url("https://fonts.googleapis.com/css2?family=Wix+Madefor+Display&display=swap");
+
+      * {
+        margin: 0;
+      }
+
+      .background {
+        fill: none;
+        pointer-events: all;
+      }
+
+      .feature {
+        fill: #ccc;
+        cursor: pointer;
+      }
+
+      .feature.active {
+        fill: orange;
+      }
+
+      .mesh {
+        z-index: 0;
+        fill: none;
+        stroke: #949494;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+
+      .select-year-container {
+        margin-top: 10px;
+        font-family: "Manrope", sans-serif;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 5px 12px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .inline-dispaly {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+      }
+
+      .map-container {
+        border-right: solid rgba(178, 172, 172, 0.218) 1px;
+      }
+
+      .left-side-container {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .right-side-container {
+        background-color: rgba(255, 255, 255, 1);
+        padding: 0px 25px 5px 15px;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+        padding-top: 1em;
+        z-index: 3;
+      }
+
+      .info-container {
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        align-items: start;
+      }
+
+      .right-side-title {
+        font-family: "Josefin Sans", sans-serif;
+      }
+
+      .info-description-container {
+        margin-top: 2em;
+        font-family: "Pathway Extreme", sans-serif;
+        font-size: 1.1em;
+        text-align: justify;
+      }
+
+      #info-paraghraph-bottom {
+        font-family: "Pathway Extreme", sans-serif;
+        font-size: 1.1em;
+      }
+
+      .stats-info-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: start;
+        gap: 10px;
+      }
+
+      .present-stat-button {
+        font-family: "Manrope", sans-serif;
+        font-size: 1.01em;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        width: 245px;
+        padding: 8px 12px;
+        background-color: #d6fbdf3b;
+        border: 1px solid #afafaf;
+        border-radius: 5px;
+      }
+
+      .present-stat-button:hover {
+        transition: 650ms;
+        background-color: #aefba8;
+        border: 1px solid #afafaf;
+        cursor: pointer;
+      }
+
+      #years {
+        font-family: "Manrope", sans-serif;
+        font-weight: 600;
+        font-size: 1em;
+        border: none;
+        background-color: white;
+        padding: 0;
+        margin: 0;
+        width: 75px;
+        padding: 5px;
+      }
+
+      .linear-graph-svg {
+        font-family: "Wix Madefor Display", sans-serif;
+      }
+
+      .bold-span {
+        font-weight: 600;
+      }
+
+      .stats-container {
+        padding: 0px 0px 15px 0px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .stats-draw-container {
+        margin-top: 0px;
+      }
+
+      ol {
+        font-size: 0.9em;
+      }
+
+      .stats-legends {
+        border-left: solid rgba(178, 172, 172, 0.218) 1px;
+        margin-top: 0px;
+        padding-left: 10px;
+        margin-left: 2.5em;
+        font-family: "Pathway Extreme", sans-serif;
+        font-size: 1.1em;
+      }
+
+      .legends-sectors {
+        margin-bottom: 0.2em;
+        padding: 2px 0px 0px 0px;
+        border-bottom: solid 1px #d0d0d0;
+      }
+
+      .legends-sectors-title {
+        margin-bottom: 0.2em;
+      }
+
+      .legends-sectors-content {
+        font-size: 0.87em;
+        color: #979393;
+        display: flex;
+        justify-content: space-between;
+      }
+    </style>
+    <title>Naslovna</title>
+  </head>
+  <body>
+    <div class="inline-dispaly">
+      <div class="left-side-container">
+        <div class="map-container"></div>
+      </div>
+      <div class="right-side-container">
+        <div class="info-container">
+          <h1 class="right-side-title">
+            Interaktivna mapa SAD-a s ukupnim prikazom BDP-a
+          </h1>
+
+          <div class="info-description-container">
+            <p id="info-paragraph">
+              S lijeve strane prikazna je interaktivna karta Sjedinjih američkih
+              država s prikazom bruto društvenog proizvoda pojedine savezne
+              države.
+              <br /><br />Klikom na pojedinu državu otvara se prozor iz kojeg je
+              mouće vidjeti raspodijelu BDP-a pojedine savezne države ne
+              određene grane gospodarstva (poput: rudarstva, financija i sl.).
+              Osim navedenog mogućo je pregeld promjene BDP-a korz godine,
+              točnije od 1997. do 2020. godine. Dodatno je omogućena i uspredba
+              s drugom zaveznom/im državama. <br /><br />
+              Grafički prikaz raspodijele ukupnog BDP-a na pojedina gospodarstav
+              moguće je pritiskom na označeni gumb. Isto je moguće ostvariti i
+              za prikaz prommjene BDP-a koroz godine. Odabir prikaza BDP-a za
+              dogovarajuću godinu moguće je pomoću odgovarajućeg selektora
+              godina.
+            </p>
+          </div>
+          <div class="select-year-container">
+            <label for="years">Odaberite godinu:</label>
+            <select name="years" id="years">
+              <option value="1997">1997</option>
+              <option value="1998">1998</option>
+              <option value="1999">1999</option>
+              <option value="2000">2000</option>
+              <option value="2001">2001</option>
+              <option value="2002">2002</option>
+              <option value="2003">2003</option>
+              <option value="2004">2004</option>
+              <option value="2005">2005</option>
+              <option value="2006">2006</option>
+              <option value="2007">2007</option>
+              <option value="2008">2008</option>
+              <option value="2009">2009</option>
+              <option value="2010">2010</option>
+              <option value="2011">2011</option>
+              <option value="2012">2012</option>
+              <option value="2013">2013</option>
+              <option value="2014">2014</option>
+              <option value="2015">2015</option>
+              <option value="2016">2016</option>
+              <option value="2017">2017</option>
+              <option value="2018">2018</option>
+              <option value="2019">2019</option>
+              <option value="2020">2020</option>
+            </select>
+          </div>
+          <div class="stats-container">
+            <div class="stats-draw-container"></div>
+            <div class="stats-legends"></div>
+          </div>
+          <p id="info-paraghraph-bottom"></p>
+          <div class="stats-info-buttons">
+            <button class="present-stat-button" id="show-gdp-by-sector-button">
+              Prikaz raspodijele BDP-a
+            </button>
+            <button class="present-stat-button" id="show-gdp-over-year-button">
+              Prikaz promjene BDP-a kroz godine
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="http://d3js.org/d3.v4.min.js"></script>
+    <script src="//d3js.org/topojson.v1.min.js"></script>
+    <script src="javascript/index.js"></script>
+  </body>
+</html>
