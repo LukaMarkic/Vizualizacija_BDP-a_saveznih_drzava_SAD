@@ -5,12 +5,12 @@ const infoParagraphContent = `
     <br /><br />Klikom na pojedinu državu otvara se prozor iz kojeg je
     mouće vidjeti raspodijelu BDP-a pojedine savezne države ne
     određene grane gospodarstva (poput: rudarstva, financija i sl.).
-    Osim navedenog mogućo je pregeld promjene BDP-a korz godine,
+    Osim navedenog mogućo je pregeld promjene BDP-a kroz godine,
     točnije od 1997. do 2020. godine. Dodatno je omogućena i uspredba
     s drugom zaveznom/im državama. <br /><br />
     Grafički prikaz raspodijele ukupnog BDP-a na pojedina gospodarstav
     moguće je pritiskom na označeni gumb. Isto je moguće ostvariti i
-    za prikaz prommjene BDP-a koroz godine. Odabir prikaza BDP-a za
+    za prikaz prommjene BDP-a kroz godine. Odabir prikaza BDP-a za
     dogovarajuću godinu moguće je pomoću odgovarajućeg selektora
     godina.`;
 
@@ -89,6 +89,7 @@ fetch("data.json")
         
 
           function UpdateDescription(){
+          
             if(currentIdState === 0){
               rightSideTitle.innerHTML = 'Prikaz raspodijele BDP-a Sjedinjenih američkih država na odgovarajuća gospodarstva';
               infoParagraph.innerHTML= `Prikaz za odgovarajuću godinu moguće je dobiti jednostavnim odabirom godine.`;
@@ -593,9 +594,11 @@ function AddLinearGraph(data, id){
       if(id === 0){
           rightSideTitle.innerHTML = 'Prikaz promjene BDP-a Sjedinjenih američkih država kroz godine';
           infoParagraph.innerHTML= `Dolje prikazani graf prikazuje promjenu BDP-a u razdolju od ${1997}. godine do ${2020.}. godine <span class="bold-span">Sjedinjenih američkih država</span>.`;
+          infoParaghraphBottom.innerHTML = '';
       }else{
-          rightSideTitle.innerHTML = `Prikaz promjene BDP-a ${GetNameOfState(data, id)} korz godine`;
+          rightSideTitle.innerHTML = `Prikaz promjene BDP-a ${GetNameOfState(data, id)} kroz godine`;
           infoParagraph.innerHTML= `Dolje prikazani graf prikazuje promjenu BDP-a u razdolju od ${1997}. godine do ${2020.}. godine <span class="bold-span">${GetNameOfState(data, id)}</span>.`;
+          infoParaghraphBottom.innerHTML = '';
       }
       
       if(statePieStats){
@@ -658,14 +661,9 @@ function AddLinearGraph(data, id){
         .attr("y", -5 - margin.top / 2)
         .attr("text-anchor", "middle")
         .style("font-size", "1.4em")
-        .text("Iznos BDP-a SAD-a u razdoblju od 1997. do 2000. ");
-
-
-      
-      
+        .text("Iznos BDP-a SAD-a u razdoblju od 1997. do 2020. ");
 
       //Line chart
-
       var valueline = d3
         .line()
         .x(function (d, i) {
