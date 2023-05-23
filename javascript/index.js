@@ -749,23 +749,17 @@ function AddLinearGraph(data, mainID, otherIds = []){
 
 
 
-       //Legends
-       /*var legend = d3
+       
+       var legend = d3
        .select(".stats-legends")
-       .append("ol").attr("id", "linaer-legends").selectAll("ol")
-       .data(pieData).enter().append("li").attr("class", "linaer-legends-sectors")
-       .attr("id", function(d) { return `legend-${d.index}`;} )
+       .append("ul").attr("id", "linaer-legends").selectAll("ol")
+       .data(stateObjects).enter().append("li").attr("class", "linear-legends-sectors")
+       .attr("id", function(d) { return `legend-${d.id}`;} )
        .html(function(d) { 
-         console.log(typeof(d.data.Description));
-         if(typeof(d.data.Description) === 'object'){
-           return `<p class="legends-sectors-title">${GetStringRepesentationOfArrayElements(d.data.Description)} </p>  
-             <p class="legends-sectors-content"><span>Udio: ${GetRoundFloatToSecondDecimal(d.data.value/totalYearValueGDP * 100)}%</span> 
-             <span>Iznos: ${GetStringReprensteationOfDollars(d.value, (id === 0) ? true : false)}</span></p>`;
-         }
-         return `<p class="legends-sectors-title"> ${d.data.Description}</p>
-         <p class="legends-sectors-content"><span>Udio: ${GetRoundFloatToSecondDecimal(d.data.value/totalYearValueGDP * 100)}%</span> 
-         <span>Iznos: ${GetStringReprensteationOfDollars(d.value, (id === 0) ? true : false)}</span></p>`; 
-     });*/
+         
+         return `<p class="legends-sectors-title"> ${GetNameOfState(data, d.id)}</p>`
+         
+     });
 }
 
 function reset() {
