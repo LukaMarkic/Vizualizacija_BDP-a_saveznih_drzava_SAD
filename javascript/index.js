@@ -21,8 +21,9 @@ const showGDPBySectorButton = document.querySelector('#show-gdp-by-sector-button
 const showGDPOverYearButton = document.querySelector('#show-gdp-over-year-button');
 let infoParagraph = document.querySelector('#info-paragraph');
 let infoParaghraphBottom = document.querySelector("#info-paraghraph-bottom")
+const statsContainer = document.querySelector(".stats-container");
 const selectYearContainer = document.querySelector(".select-year-container");
-const statsPiecontainer = document.querySelector(".stats-draw-container");
+const statsDrawContainer = document.querySelector(".stats-draw-container");
 const presentStatButton = document.querySelector('.present-stat-button');
 const statsLegendsContainer = document.querySelector(".stats-legends");
 
@@ -121,9 +122,9 @@ fetch("data.json")
             showGDPBySectorButton.style.width = "290px";
             showGDPOverYearButton.style.display = "block";
             showGDPOverYearButton.style.width = "360px";
-            statsPiecontainer.style.display = "none";
+            statsDrawContainer.style.display = "none";
             statsLegendsContainer.display = "none";
-            SetDrawMargin(statsPiecontainer, statsLegendsContainer, "0px");
+            SetDrawMargin(statsDrawContainer, statsLegendsContainer, "0px");
 
             var bounds = path.bounds(d),
               dx = bounds[1][0] - bounds[0][0],
@@ -208,11 +209,11 @@ fetch("data.json")
                 showGDPBySectorButton.style.display = "none";
                 showGDPOverYearButton.style.display = "block"
                 selectYearContainer.style.display = "flex";
-                statsPiecontainer.style.display = "block";
+                statsDrawContainer.style.display = "block";
                 statsLegendsContainer.display = "block";
                 showGDPBySectorButton.style.width = "290px";
                 showGDPOverYearButton.style.width = "360px";
-                SetDrawMargin(statsPiecontainer, statsLegendsContainer, "5px 0px");
+                SetDrawMargin(statsDrawContainer, statsLegendsContainer, "5px 0px");
                 isShowPress = true;
                 DrawPieChart(data, currentIdState, yearObject.options[yearObject.selectedIndex].text);
               });
@@ -226,13 +227,13 @@ fetch("data.json")
                 showGDPBySectorButton.style.display = "block";
                 showGDPOverYearButton.style.display = "none";
                 selectYearContainer.style.display = "none";
-                statsPiecontainer.style.display = "block";
+                statsDrawContainer.style.display = "block";
                 statsLegendsContainer.display = "block";
-                SetDrawMargin(statsPiecontainer, statsLegendsContainer, "20px 0px");
+                SetDrawMargin(statsDrawContainer, statsLegendsContainer, "20px 0px");
                 showGDPBySectorButton.style.width = "290px";
                 showGDPOverYearButton.style.width = "360px";
                 isShowPress = true;
-                AddLinearGraph(data, currentIdState);
+                AddLinearGraph(data, currentIdState, [1, 2]);
               });
                                 
 
@@ -320,6 +321,7 @@ var statePieStats;
 function DrawPieChart (data, id, year){
   if(typeof(id) === 'undefined' || id === null) return;
   
+  statsContainer.style["flex-direction"] = "row";
   RemoveDrawnData();
   statePieStats = [];
   var outerRadius = 240;
@@ -502,8 +504,6 @@ function DrawPieChart (data, id, year){
         <span>Iznos: ${GetStringReprensteationOfDollars(d.value, (id === 0) ? true : false)}</span></p>`; 
     });
 
-    //legend.insert('p').attr("id", "stats-legends-title").innerHTML(`Ukupni BDP ${totalYearValueGDP}`)
-
 }
 
 function GetStringReprensteationOfDollars(number, toBillions = false){
@@ -541,45 +541,80 @@ function GetStringRepesentationOfArrayElements(array){
   return result;
 }
 
-function AddLinearGraph(data, id){
+function GetLinarGraphObject(data, id){
+  
+  let stateObject = 
+    {
+      id: id,
+      values: {
+        "1997": GetTotalGDP(data, id, "1997"),
+        "1998": GetTotalGDP(data, id, "1998"),
+        "1999": GetTotalGDP(data, id, "1999"),
+        "2000": GetTotalGDP(data, id, "2000"),
+        "2001": GetTotalGDP(data, id, "2001"),
+        "2002": GetTotalGDP(data, id, "2002"),
+        "2003": GetTotalGDP(data, id, "2003"),
+        "2004": GetTotalGDP(data, id, "2004"),
+        "2005": GetTotalGDP(data, id, "2005"),
+        "2006": GetTotalGDP(data, id, "2006"),
+        "2007": GetTotalGDP(data, id, "2007"),
+        "2008": GetTotalGDP(data, id, "2008"),
+        "2009": GetTotalGDP(data, id, "2009"),
+        "2010": GetTotalGDP(data, id, "2010"),
+        "2011": GetTotalGDP(data, id, "2011"),
+        "2012": GetTotalGDP(data, id, "2012"),
+        "2013": GetTotalGDP(data, id, "2013"),
+        "2014": GetTotalGDP(data, id, "2014"),
+        "2015": GetTotalGDP(data, id, "2015"),
+        "2016": GetTotalGDP(data, id, "2016"),
+        "2017": GetTotalGDP(data, id, "2017"),
+        "2018": GetTotalGDP(data, id, "2018"),
+        "2019": GetTotalGDP(data, id, "2019"),
+        "2020": GetTotalGDP(data, id, "2020")
+      }
+    }
+
+    return stateObject;
+  
+}
+
+function AddLinearGraph(data, mainID, otherIds = []){
+
+  statsContainer.style["flex-direction"] = "column";
 
   RemoveDrawnData();
+  let stateObjects = [];
+  let ids = [];
+  if(otherIds.length > 0) ids = [...otherIds];
+  ids.push(mainID);
+
+  console.log(ids);
   
-  stateObject = 
-    {
-      "1997": GetTotalGDP(data, id, "1997"),
-      "1998": GetTotalGDP(data, id, "1997"),
-      "1999": GetTotalGDP(data, id, "1999"),
-      "2000": GetTotalGDP(data, id, "2000"),
-      "2001": GetTotalGDP(data, id, "2001"),
-      "2002": GetTotalGDP(data, id, "2002"),
-      "2003": GetTotalGDP(data, id, "2003"),
-      "2004": GetTotalGDP(data, id, "2004"),
-      "2005": GetTotalGDP(data, id, "2005"),
-      "2006": GetTotalGDP(data, id, "2006"),
-      "2007": GetTotalGDP(data, id, "2007"),
-      "2008": GetTotalGDP(data, id, "2008"),
-      "2009": GetTotalGDP(data, id, "2009"),
-      "2010": GetTotalGDP(data, id, "2010"),
-      "2011": GetTotalGDP(data, id, "2011"),
-      "2012": GetTotalGDP(data, id, "2012"),
-      "2013": GetTotalGDP(data, id, "2013"),
-      "2014": GetTotalGDP(data, id, "2014"),
-      "2015": GetTotalGDP(data, id, "2015"),
-      "2016": GetTotalGDP(data, id, "2016"),
-      "2017": GetTotalGDP(data, id, "2017"),
-      "2018": GetTotalGDP(data, id, "2018"),
-      "2019": GetTotalGDP(data, id, "2019"),
-      "2020": GetTotalGDP(data, id, "2020")
-    }
-  
+  ids.forEach(id => stateObjects.push(GetLinarGraphObject(data, id)));
     
-      var years = Object.keys(stateObject);
-      var GDPvalues = Object.values(stateObject);
+      var years = Object.keys(stateObjects[0].values);
+      var GDPvalues;
       var colors = [ "#161717", "#3dd422", "#2e92f0", "#ed3232"];
       var margin = { top: 50, bottom: 50, left: 110, right: 30 };
       var width = 1200 - margin.left - margin.right;
       var height = 600 - margin.top - margin.bottom;
+
+      let max = {
+        index: 0,
+        value: d3.max(Object.values(stateObjects[0].values))
+      }
+      stateObjects.forEach((element, index) => {
+        
+        if(d3.max(Object.values(element.values)) > max.value){
+          
+          max = {
+            index: index,
+            value: d3.max(Object.values(element.values))
+          }
+        }
+      })
+
+      
 
       var x = d3
         .scaleBand()
@@ -588,16 +623,16 @@ function AddLinearGraph(data, id){
 
       var y = d3
         .scaleLinear()
-        .domain([0, d3.max(GDPvalues) + 5])
+        .domain([0, max.value + 5])
         .range([height, 20]);
 
-      if(id === 0){
+      if(mainID === 0){
           rightSideTitle.innerHTML = 'Prikaz promjene BDP-a Sjedinjenih američkih država kroz godine';
           infoParagraph.innerHTML= `Dolje prikazani graf prikazuje promjenu BDP-a u razdolju od ${1997}. godine do ${2020.}. godine <span class="bold-span">Sjedinjenih američkih država</span>.`;
           infoParaghraphBottom.innerHTML = '';
       }else{
-          rightSideTitle.innerHTML = `Prikaz promjene BDP-a ${GetNameOfState(data, id)} kroz godine`;
-          infoParagraph.innerHTML= `Dolje prikazani graf prikazuje promjenu BDP-a u razdolju od ${1997}. godine do ${2020.}. godine <span class="bold-span">${GetNameOfState(data, id)}</span>.`;
+          rightSideTitle.innerHTML = `Prikaz promjene BDP-a ${GetNameOfState(data, mainID)} kroz godine`;
+          infoParagraph.innerHTML= `Dolje prikazani graf prikazuje promjenu BDP-a u razdolju od ${1997}. godine do ${2020.}. godine <span class="bold-span">${GetNameOfState(data, mainID)}</span>.`;
           infoParaghraphBottom.innerHTML = '';
       }
       
@@ -673,13 +708,64 @@ function AddLinearGraph(data, id){
           return y(d);
         });
 
-      var linechart = svgLinear
+
+      
+      
+        
+      
+      stateObjects.forEach(stateObject => {
+        console.log(stateObject);
+        var linechart = svgLinear
         .append("path")
-        .attr("class", "line")
-        .attr("d", valueline(GDPvalues))
-        .style("stroke", colors[0])
-        .style("stroke-width", 2)
-        .style("fill", "none");
+        .attr("class", "line").attr("id", `line-${stateObject.id}`)
+        .attr("d", valueline(Object.values(stateObject.values)))
+        .style("stroke", function(){
+          if(stateObject.id === mainID) return colors[0];
+          const randomColor = Math.floor(Math.random()*16777215).toString(16);
+          return "#" + randomColor;
+        })
+        .style("stroke-width", 4)
+        .style("fill", "none")
+        .on("mouseover", function () {
+          
+         
+          d3.select(this).style("stroke-width", 6).style("cursor", 'pointer')
+            .append("svg:title").attr("id", "title")
+            .text(`${GetNameOfState(data, stateObject.id)}\n`);
+
+          
+        }).on("mouseout", function (d, i) {
+          
+          
+          d3.select(this).style("stroke-width", 2)
+          
+          const titleBox = document.getElementById('title');
+                titleBox.remove();
+        });
+      })
+
+  
+
+
+
+
+       //Legends
+       /*var legend = d3
+       .select(".stats-legends")
+       .append("ol").attr("id", "linaer-legends").selectAll("ol")
+       .data(pieData).enter().append("li").attr("class", "linaer-legends-sectors")
+       .attr("id", function(d) { return `legend-${d.index}`;} )
+       .html(function(d) { 
+         console.log(typeof(d.data.Description));
+         if(typeof(d.data.Description) === 'object'){
+           return `<p class="legends-sectors-title">${GetStringRepesentationOfArrayElements(d.data.Description)} </p>  
+             <p class="legends-sectors-content"><span>Udio: ${GetRoundFloatToSecondDecimal(d.data.value/totalYearValueGDP * 100)}%</span> 
+             <span>Iznos: ${GetStringReprensteationOfDollars(d.value, (id === 0) ? true : false)}</span></p>`;
+         }
+         return `<p class="legends-sectors-title"> ${d.data.Description}</p>
+         <p class="legends-sectors-content"><span>Udio: ${GetRoundFloatToSecondDecimal(d.data.value/totalYearValueGDP * 100)}%</span> 
+         <span>Iznos: ${GetStringReprensteationOfDollars(d.value, (id === 0) ? true : false)}</span></p>`; 
+     });*/
 }
 
 function reset() {
@@ -693,7 +779,7 @@ function reset() {
   selectYearContainer.style.display = "block";
   showGDPBySectorButton.style.width = "245px";
   showGDPOverYearButton.style.width = "245px";
-  SetDrawMargin(statsPiecontainer, statsLegendsContainer, "0px");
+  SetDrawMargin(statsDrawContainer, statsLegendsContainer, "0px");
   infoParaghraphBottom.innerHTML = '';
   
   const svgBox = document.getElementById('svg-stats');
@@ -709,6 +795,8 @@ function reset() {
     .style("stroke-width", "1.5px")
     .attr("transform", "");
 }
+
+
 
 
 
