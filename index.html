@@ -7,6 +7,8 @@
     <style>
       @import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Manrope&family=Pathway+Extreme:wght@300&family=Poltawski+Nowy&display=swap");
       @import url("https://fonts.googleapis.com/css2?family=Wix+Madefor+Display&display=swap");
+      @import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
+
 
       * {
         margin: 0;
@@ -145,6 +147,7 @@
         display: flex;
         flex-direction: row;
         align-items: center;
+        justify-content: center;
         gap: 15px;
       }
 
@@ -160,7 +163,7 @@
         border-left: solid rgba(178, 172, 172, 0.218) 1px;
         margin-top: 0px;
         padding-left: 10px;
-        margin-left: 2.5em;
+        margin-left: 2.4em;
         font-family: "Pathway Extreme", sans-serif;
         font-size: 1.1em;
       }
@@ -181,6 +184,86 @@
         display: flex;
         justify-content: space-between;
       }
+
+     
+
+      #linear-legends{
+        height: 150px;
+        display: flex;
+        flex-direction: column;
+        flex-wrap: wrap;
+      }
+
+      #linear-legends>* {
+        flex: 1 1 30%;
+      }
+
+      .legends-linear-container {
+        margin-left: 85px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .legends-linear-container div {
+        width: 1.5em;
+        height: 0.25em;
+      }
+
+      .select-state-container{
+        display: none;
+        font-family: "Manrope", sans-serif;
+        font-weight: 500;
+        font-size: 1em;
+        border: #949494 1px solid;
+        border-radius: 5px;
+        justify-content: center;
+        align-items: center;
+        padding: 0px 8px;
+        margin-top: 2px;
+        margin-bottom: 2em;
+      }
+      #select-state{
+        font-family: "Manrope", sans-serif;
+        font-weight: 600;
+        font-size: 1em;
+        border: none;
+        background-color: white;
+        padding: 0;
+        margin: 0;
+        width: 280px;
+        padding: 5px;
+        
+      }
+
+      .legends-linear-container{
+        display: flex;
+        justify-content: space-between;
+        width: 290px;
+        margin-bottom: 0.8em;
+        height: 31.5px;
+        
+      }
+
+    
+      .remove-legend-button{
+        font-family: 'Staatliches', cursive;
+        background-color: white;
+        border: #5252522f 1px solid;
+        border-radius: 8px;
+        padding: 4px 12px;
+        font-size: 0.95em
+      }
+
+      .remove-legend-button:hover{
+        transition: 450ms;
+        background-color: #f09999;
+      }
+
+      .legendTitle{
+        font-family: "Wix Madefor Display", sans-serif;
+        text-align: justify;
+      }
     </style>
     <title>Naslovna</title>
   </head>
@@ -188,6 +271,7 @@
     <div class="inline-dispaly">
       <div class="left-side-container">
         <div class="map-container"></div>
+        <div class="map-legend"></div>
       </div>
       <div class="right-side-container">
         <div class="info-container">
@@ -204,8 +288,8 @@
               mouće vidjeti raspodijelu BDP-a pojedine savezne države ne
               određene grane gospodarstva (poput: rudarstva, financija i sl.).
               Osim navedenog mogućo je pregeld promjene BDP-a korz godine,
-              točnije od 1997. do 2020. godine. Dodatno je omogućena i uspredba
-              s drugom zaveznom/im državama. <br /><br />
+              točnije od 1997. do 2020. godine. Dodatno je omogućena i usporedba
+              s drugom saveznom/im državama. <br /><br />
               Grafički prikaz raspodijele ukupnog BDP-a na pojedina gospodarstav
               moguće je pritiskom na označeni gumb. Isto je moguće ostvariti i
               za prikaz prommjene BDP-a koroz godine. Odabir prikaza BDP-a za
@@ -240,6 +324,13 @@
               <option value="2018">2018</option>
               <option value="2019">2019</option>
               <option value="2020">2020</option>
+            </select>
+          </div>
+          <div class="select-state-container">
+            <label for="select-state"></label>
+            <select name="select-state"" id="select-state"">
+              <option disabled selected value>Odaberite državu za usporedbu</option>
+              
             </select>
           </div>
           <div class="stats-container">

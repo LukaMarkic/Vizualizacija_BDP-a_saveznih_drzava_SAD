@@ -6,8 +6,8 @@ const infoParagraphContent = `
     mouće vidjeti raspodijelu BDP-a pojedine savezne države ne
     određene grane gospodarstva (poput: rudarstva, financija i sl.).
     Osim navedenog mogućo je pregeld promjene BDP-a kroz godine,
-    točnije od 1997. do 2020. godine. Dodatno je omogućena i uspredba
-    s drugom zaveznom/im državama. <br /><br />
+    točnije od 1997. do 2020. godine. Dodatno je omogućena i usporedba
+    s drugom saveznom/im državama. <br /><br />
     Grafički prikaz raspodijele ukupnog BDP-a na pojedina gospodarstav
     moguće je pritiskom na označeni gumb. Isto je moguće ostvariti i
     za prikaz prommjene BDP-a kroz godine. Odabir prikaza BDP-a za
@@ -26,7 +26,8 @@ const selectYearContainer = document.querySelector(".select-year-container");
 const statsDrawContainer = document.querySelector(".stats-draw-container");
 const presentStatButton = document.querySelector('.present-stat-button');
 const statsLegendsContainer = document.querySelector(".stats-legends");
-
+const selectStateContainer = document.querySelector('.select-state-container');
+const selectState = document.querySelector("#select-state");
 
 //Decalarton of graph elements
 var margin = { top: 0, bottom: 250, left: 0, right: 0 };
@@ -53,6 +54,7 @@ var g = svg.append("g").style("stroke-width", "1.5px");
 svg.attr("fill",  "#595959");
 let currentIdState = 0;
 let isShowPress = false;
+let addedStatesToLinearGraph = []
 
 
 /*
@@ -81,6 +83,43 @@ const SetDrawMargin = (obj1, obj2, margin) => {
   if(typeof(obj2) !== 'undefined') obj2.style.margin = margin;
 }
 
+
+const GetNameOfAllStates = (data) =>{
+  let result = [];
+  data.forEach(dataElement => {
+    if(result.some(element => element.id === dataElement.GeoFIPS) === false) {
+      result.push({
+        id: dataElement.GeoFIPS,
+        name: dataElement.GeoName
+      })
+    }
+
+  })
+
+  return result;
+}
+
+
+const FillSelectStateOpstions = (data, ids) =>{
+  let states = GetNameOfAllStates(data);
+  const result = states.filter(element => {
+    let value = ids.some(id => id === element.id);
+    return !value;
+  } )
+  let opt = document.createElement("option");
+  opt.disabled = true;
+  opt.innerHTML = 'Odaberite državu za usporedbu';
+  selectState.innerHTML = '';
+  selectState.append(opt);
+  selectState[0].setAttribute('selected','selected');
+  result.map( (state) => {
+    opt = document.createElement("option");
+    opt.value = state.id; // the index
+    opt.innerHTML = state.name;
+    selectState.append(opt);
+});
+if(addedStatesToLinearGraph.length >= 8) selectStateContainer.style.display = "none";
+}
 
 
 //Read the data
@@ -125,6 +164,10 @@ fetch("data.json")
             statsDrawContainer.style.display = "none";
             statsLegendsContainer.display = "none";
             SetDrawMargin(statsDrawContainer, statsLegendsContainer, "0px");
+            RemoveDrawnData();
+            infoParagraph.innerHTML = ''
+            selectStateContainer.style.display = "none";
+            FillSelectStateOpstions(data, [d.id]);
 
             var bounds = path.bounds(d),
               dx = bounds[1][0] - bounds[0][0],
@@ -139,15 +182,142 @@ fetch("data.json")
               .duration(750)
               .style("stroke-width", 1.5 / scale + "px")
               .attr("transform", "translate(" + translate + ")scale(" + scale + ")");
-          
-           // AddStats(data, d.id, yearObject.options[yearObject.selectedIndex].text);
+
           }
 
           //Read map data
           d3.json("us.json", function(error, us) {
             if (error) throw error;
               
+              var scaleToRed = d3.scaleLinear().domain([0.85, 1]).range([0.15, 1]);
+              console.log("Scale" + scaleToRed(0.8))
+
+              var mapLegend = d3.select(".map-legend")
+                .append("svg")
+                .attr("width", 645)
+                .attr("height", 250)
+                
+              var defs = mapLegend.append("defs");
+
+              var linearGradient = defs.append("linearGradient")
+                  .attr("id", "linear-gradient");
+
+              var linearGradientRed = defs.append("linearGradient")
+              .attr("id", "linear-gradient-red");
+
+              linearGradient
+                  .attr("x1", "0%")
+                  .attr("y1", "0%")
+                  .attr("x2", "100%")
+                  .attr("y2", "0%");
+
+              linearGradientRed
+                  .attr("x1", "0%")
+                  .attr("y1", "0%")
+                  .attr("x2", "100%")
+                  .attr("y2", "0%");
+
+              //Set the color for the start (0%)
+              linearGradient.append("stop")
+              .attr("offset", "0%")
+              .attr("stop-color", "rgb(0, 128, 0)"); //light blue
+
+              //Set the color for the end (100%)
+              linearGradient.append("stop")
+              .attr("offset", "85%")
+              .attr("stop-color", "rgba(0, 128, 0, 0.15)");
+
+              linearGradient.append("stop")
+              .attr("offset", "85%")
+              .attr("stop-color", "rgba(222, 48, 4, 0.15)");
+
+              linearGradient.append("stop")
+              .attr("offset", "100%")
+              .attr("stop-color", "rgba(222, 48, 4, 1)");
+
+              mapLegend.append("rect")
+                .attr("width", 380)
+                .attr("height", 25).attr("transform", "translate(20 48)")
+                .style("fill", "url(#linear-gradient)");
+
               
+
+              // append title
+             mapLegend.append("text")
+                .attr("class", "legendTitle")
+                .attr("x", 20)
+                .attr("y", 20)
+                .style("text-anchor", "left").style("font-weight", 600)
+                .text("Intezitet boje odogvarajućeg omjera BDP-a pojedine savezene države u odonsu na ");
+
+             mapLegend.append("text")
+                .attr("class", "legendTitle")
+                .attr("x", 20)
+                .attr("y", 38)
+                .style("text-anchor", "left").style("font-weight", 600)
+                .text("saveznu dražavu s najvećim BDP-om");
+
+              //create tick marks
+              var xLeg = d3.scaleLinear()
+              .domain([0, 100])
+              .range([20, 400]);
+
+              let presentnegaes = ["100%", "15%", "0%"] 
+              var axisLeg = d3.axisBottom(xLeg)
+              .tickValues([0, 85, 100]).tickFormat(function (d, i) {
+                return presentnegaes[i];
+              })
+ 
+               mapLegend
+               .attr("class", "axis")
+               .append("g")
+               .attr("transform", "translate(0, 78)")
+               .call(axisLeg);
+
+
+                mapLegend.append("text")
+                .attr("class", "legendTitle")
+                .attr("x", 20)
+                .attr("y", 120)
+                .style("text-anchor", "left")
+                .html(`Legenda prikazuje intezitet korištenih boja. Svaka intezitet boje odgovara omjeru`)
+
+                mapLegend.append("text")
+                .attr("class", "legendTitle")
+                .attr("x", 20)
+                .attr("y", 136)
+                .style("text-anchor", "left")
+                .html(`BDP-a pojedine savezne države u odnosu na saveznu državu s najvećim BDP-om.`)
+
+                mapLegend.append("text")
+                .attr("class", "legendTitle")
+                .attr("x", 20)
+                .attr("y", 152)
+                .style("text-anchor", "left")
+                .html(`Ukoliko se radi o saveznoj državi s najvećim BDP-om ona će imat puni intezitet zelene`)
+
+                mapLegend.append("text")
+                .attr("class", "legendTitle")
+                .attr("x", 20)
+                .attr("y", 168)
+                .style("text-anchor", "left")
+                .html(`boje. Sve savezne države čiji je BDP manji od 15% u odnosu na saveznu državu s`)
+
+                mapLegend.append("text")
+                .attr("class", "legendTitle")
+                .attr("x", 20)
+                .attr("y", 184)
+                .style("text-anchor", "left")
+                .html(`najvećim BDP-om biti će obojane crvenom bojom pri čemu će ona savezna država`)
+
+                mapLegend.append("text")
+                .attr("class", "legendTitle")
+                .attr("x", 20)
+                .attr("y", 200)
+                .style("text-anchor", "left")
+                .html(`koja ima najmanji BDP biti obojana najvećim inteziteteom crvene boje`)
+
+
                var states = g.selectAll("path")
                   .data(topojson.feature(us, us.objects.states).features)
                   .enter()
@@ -185,7 +355,8 @@ fetch("data.json")
                       }else{
                         totalGDPofCurrentState = 0;
                       }
-                      return (totalGDPofCurrentState/max >= 0.15) ? totalGDPofCurrentState/max : GetMinGDP(data, yearObject.options[yearObject.selectedIndex].text)/totalGDPofCurrentState;
+                      return (totalGDPofCurrentState/max >= 0.15) ? totalGDPofCurrentState/max : scaleToRed(1-totalGDPofCurrentState/max);
+                      //return (totalGDPofCurrentState/max >= 0.15) ? totalGDPofCurrentState/max : GetMinGDP(data, yearObject.options[yearObject.selectedIndex].text)/totalGDPofCurrentState;
                     })
                 }
                 
@@ -198,6 +369,16 @@ fetch("data.json")
                   DrawPieChart(data, currentIdState, yearObject.options[yearObject.selectedIndex].text);
                 })
               
+                selectState.addEventListener("change", ()=>{
+                 
+                  let id = parseInt(selectState.options[selectState.selectedIndex].value);
+                  if(addedStatesToLinearGraph.some(element => element === id)) return;
+                  addedStatesToLinearGraph.push(id);
+                  AddLinearGraph(data, currentIdState, addedStatesToLinearGraph);
+                  let allIds = [...addedStatesToLinearGraph];
+                  allIds.push(currentIdState)
+                  FillSelectStateOpstions(data, allIds);
+                })
 
               
               showGDPBySectorButton.addEventListener('click', ()=>{
@@ -215,6 +396,7 @@ fetch("data.json")
                 showGDPOverYearButton.style.width = "360px";
                 SetDrawMargin(statsDrawContainer, statsLegendsContainer, "5px 0px");
                 isShowPress = true;
+                selectStateContainer.style.display = "none";
                 DrawPieChart(data, currentIdState, yearObject.options[yearObject.selectedIndex].text);
               });
 
@@ -222,7 +404,7 @@ fetch("data.json")
                 
                 var element = d3.select(".left-side-container").transition().duration(750).style("width", "400px");
                 //If USA dataset then
-                
+                addedStatesToLinearGraph = [];
                 UpdateDescription();
                 showGDPBySectorButton.style.display = "block";
                 showGDPOverYearButton.style.display = "none";
@@ -232,14 +414,19 @@ fetch("data.json")
                 SetDrawMargin(statsDrawContainer, statsLegendsContainer, "20px 0px");
                 showGDPBySectorButton.style.width = "290px";
                 showGDPOverYearButton.style.width = "360px";
+                selectStateContainer.style.display = "flex";
                 isShowPress = true;
-                AddLinearGraph(data, currentIdState, [1, 2]);
+                AddLinearGraph(data, currentIdState);
+                FillSelectStateOpstions(data, [currentIdState]);
               });
+
+
+
                                 
 
               states.on("mouseover", function (d, i) {
                 let currentState = data.filter(element => element.GeoFIPS === d.id);
-                let totalGDP = GetTotalGDP(data, d.id, "1997");
+                let totalGDP = GetTotalGDP(data, d.id, yearObject.options[yearObject.selectedIndex].value);
                 d3.select(this) 
                 .style("fill", "#878787").attr("opacity", 0.8).style("stroke", "black")
                   .append("svg:title").attr("id", "title")
@@ -254,9 +441,8 @@ fetch("data.json")
                 d3.select(this).style("fill", function(d,i){          
                   return (totalGDPofCurrentState/max >= 0.15) ? "green": "#de3004";
                 })
-                .attr("opacity", function(d,i){
-                               
-                  return (totalGDPofCurrentState/max >= 0.15) ? totalGDPofCurrentState/max : GetMinGDP(data, yearObject.options[yearObject.selectedIndex].text)/totalGDPofCurrentState;
+                .attr("opacity", function(d,i){          
+                  return (totalGDPofCurrentState/max >= 0.15) ? totalGDPofCurrentState/max : scaleToRed(1-totalGDPofCurrentState/max);
                 });
 
                 const titleBox = document.getElementById('title');
@@ -322,6 +508,8 @@ function DrawPieChart (data, id, year){
   if(typeof(id) === 'undefined' || id === null) return;
   
   statsContainer.style["flex-direction"] = "row";
+  statsContainer.style["justify-content"] = "center";
+  statsContainer.style["align-items"] = "center";
   RemoveDrawnData();
   statePieStats = [];
   var outerRadius = 240;
@@ -417,7 +605,8 @@ function DrawPieChart (data, id, year){
                 titleBox.remove();
         });
 
-        console.log(pieData.length);
+      
+
 
   var myColor = d3.scaleQuantize()
     .domain(d3.extent(pieData, d => d.value))
@@ -493,7 +682,7 @@ function DrawPieChart (data, id, year){
       .data(pieData).enter().append("li").attr("class", "legends-sectors")
       .attr("id", function(d) { return `legend-${d.index}`;} )
       .html(function(d) { 
-        console.log(typeof(d.data.Description));
+       
         if(typeof(d.data.Description) === 'object'){
           return `<p class="legends-sectors-title">${GetStringRepesentationOfArrayElements(d.data.Description)} </p>  
             <p class="legends-sectors-content"><span>Udio: ${GetRoundFloatToSecondDecimal(d.data.value/totalYearValueGDP * 100)}%</span> 
@@ -578,23 +767,26 @@ function GetLinarGraphObject(data, id){
   
 }
 
-function AddLinearGraph(data, mainID, otherIds = []){
+function AddLinearGraph(data, mainId, otherIds = []){
 
+  selectStateContainer.style.display = "flex";
   statsContainer.style["flex-direction"] = "column";
+  statsContainer.style["align-items"] = "start";
+  statsContainer.style["justify-content"] = "start"
 
   RemoveDrawnData();
   let stateObjects = [];
   let ids = [];
   if(otherIds.length > 0) ids = [...otherIds];
-  ids.push(mainID);
+  ids.push(mainId);
 
-  console.log(ids);
+  
   
   ids.forEach(id => stateObjects.push(GetLinarGraphObject(data, id)));
     
       var years = Object.keys(stateObjects[0].values);
       var GDPvalues;
-      var colors = [ "#161717", "#3dd422", "#2e92f0", "#ed3232"];
+      var colorsPalette = ["#0f59d1", "#0ac43c", "#83cc96", "#7179f5", "#9c16ba", "#de7143", "#8f910a", "#d61132", "#161717"]
       var margin = { top: 50, bottom: 50, left: 110, right: 30 };
       var width = 1200 - margin.left - margin.right;
       var height = 600 - margin.top - margin.bottom;
@@ -615,24 +807,26 @@ function AddLinearGraph(data, mainID, otherIds = []){
       })
 
       
+    
+    console.log(d3.range(years.length));
 
       var x = d3
         .scaleBand()
         .domain(d3.range(years.length))
-        .rangeRound([0, width]);
+        .range([0, width]);
 
       var y = d3
         .scaleLinear()
         .domain([0, max.value + 5])
         .range([height, 20]);
 
-      if(mainID === 0){
+      if(mainId === 0){
           rightSideTitle.innerHTML = 'Prikaz promjene BDP-a Sjedinjenih američkih država kroz godine';
           infoParagraph.innerHTML= `Dolje prikazani graf prikazuje promjenu BDP-a u razdolju od ${1997}. godine do ${2020.}. godine <span class="bold-span">Sjedinjenih američkih država</span>.`;
           infoParaghraphBottom.innerHTML = '';
       }else{
-          rightSideTitle.innerHTML = `Prikaz promjene BDP-a ${GetNameOfState(data, mainID)} kroz godine`;
-          infoParagraph.innerHTML= `Dolje prikazani graf prikazuje promjenu BDP-a u razdolju od ${1997}. godine do ${2020.}. godine <span class="bold-span">${GetNameOfState(data, mainID)}</span>.`;
+          rightSideTitle.innerHTML = `Prikaz promjene BDP-a ${GetNameOfState(data, mainId)} kroz godine`;
+          infoParagraph.innerHTML= `Dolje prikazani graf prikazuje promjenu BDP-a u razdolju od ${1997}. godine do ${2020.}. godine <span class="bold-span">${GetNameOfState(data, mainId)}</span>.`;
           infoParaghraphBottom.innerHTML = '';
       }
       
@@ -696,13 +890,13 @@ function AddLinearGraph(data, mainID, otherIds = []){
         .attr("y", -5 - margin.top / 2)
         .attr("text-anchor", "middle")
         .style("font-size", "1.4em")
-        .text("Iznos BDP-a SAD-a u razdoblju od 1997. do 2020. ");
+        .text(`Iznos BDP-a ${(currentIdState === 0) ? 'SAD-a' : 'savezne države ' + GetNameOfState(data, currentIdState)} u razdoblju od 1997. do 2020.`);
 
       //Line chart
       var valueline = d3
         .line()
         .x(function (d, i) {
-          return x(i);
+          return x(i) + 23;
         })
         .y(function (d) {
           return y(d);
@@ -711,18 +905,32 @@ function AddLinearGraph(data, mainID, otherIds = []){
 
       
       
-        
+      let colors = [];
       
       stateObjects.forEach(stateObject => {
-        console.log(stateObject);
+        
         var linechart = svgLinear
         .append("path")
         .attr("class", "line").attr("id", `line-${stateObject.id}`)
         .attr("d", valueline(Object.values(stateObject.values)))
         .style("stroke", function(){
-          if(stateObject.id === mainID) return colors[0];
-          const randomColor = Math.floor(Math.random()*16777215).toString(16);
-          return "#" + randomColor;
+          if(stateObject.id === mainId) {
+            colors.push({
+              id: stateObject.id,
+              colorIndex: colorsPalette.length - 1
+            })
+            return "#161717"
+          };
+          let randomIndex = Math.floor(Math.random() * (colorsPalette.length -1) );
+          
+          while(colors.some(element => element.colorIndex === randomIndex) === true){
+            randomIndex = Math.floor(Math.random() * (colorsPalette.length - 1))
+          }
+          colors.push({
+            id: stateObject.id,
+            colorIndex: randomIndex
+          })
+          return colorsPalette[randomIndex];
         })
         .style("stroke-width", 4)
         .style("fill", "none")
@@ -742,24 +950,78 @@ function AddLinearGraph(data, mainID, otherIds = []){
           const titleBox = document.getElementById('title');
                 titleBox.remove();
         });
+
+        console.log(stateObject);
+        
+        years.forEach((year, index) => {
+          svgLinear
+          .append("circle")
+          .attr("r", 4)
+          .attr("cx", () => x(index) + 23)
+          .attr("cy", () => y(stateObject.values[year]))
+          .style("fill", "white").style("stroke", "black")
+          .on("mouseover", function () {
+          
+            d3.select(this).attr("r", 7).style("cursor", 'pointer')
+              .append("svg:title").attr("id", "title")
+              .text(`${stateObject.values[year]} mil. USD\n`);
+         
+          }).on("mouseout", function () {
+             
+            d3.select(this).attr("r", 4);
+            const titleBox = document.getElementById('title');
+                  titleBox.remove();
+          });
+        })
+        
+
       })
-
-  
-
-
-
-
-       
+      
+      
+      
        var legend = d3
        .select(".stats-legends")
-       .append("ul").attr("id", "linaer-legends").selectAll("ol")
-       .data(stateObjects).enter().append("li").attr("class", "linear-legends-sectors")
+       .append("div").attr("id", "linear-legends").selectAll("ol")
+       .data(stateObjects).enter().append("div").attr("class", "linear-legends-sectors")
        .attr("id", function(d) { return `legend-${d.id}`;} )
        .html(function(d) { 
-         
-         return `<p class="legends-sectors-title"> ${GetNameOfState(data, d.id)}</p>`
-         
+         let color = colors.filter(element => element.id === d.id);
+         let buttonValue = `<button class="remove-legend-button" id="${d.id}">Ukloni</button>`
+        
+         if(d.id == currentIdState) buttonValue = ''; 
+
+         return `<div class="legends-linear-container">
+          <div style="width: 75%; display: flex; align-items: center; gap:10px">
+            <div id="legends-linear-color-${d.id}" style="background-color:${colorsPalette[color[0].colorIndex]}"></div>
+            <p class="legends-sectors-title">${GetNameOfState(data, d.id)}</p>
+            </div>
+            ${buttonValue}
+         </div>`
      });
+
+     SetEventListenersToButon(data);
+}
+
+function SetEventListenersToButon(data){
+  const removeLegendButton = document.querySelectorAll('.remove-legend-button');
+
+  removeLegendButton.forEach(button =>{
+    let id = button.id;
+    if(id=== currentIdState.toString()) return;
+    button.addEventListener('click', () =>{
+      RemoveStateLinaerChart(data, id);
+    })
+  })
+}
+
+function RemoveStateLinaerChart(data, id){
+  if(addedStatesToLinearGraph.length < 8 ) selectStateContainer.style.display = "flex";
+  let indexOfItem = addedStatesToLinearGraph.indexOf(parseInt(id))
+  addedStatesToLinearGraph.splice(indexOfItem, 1);
+  AddLinearGraph(data, currentIdState, addedStatesToLinearGraph);
+  let allIds = [...addedStatesToLinearGraph];
+  allIds.push(currentIdState)
+  FillSelectStateOpstions(data, allIds);
 }
 
 function reset() {
@@ -773,8 +1035,11 @@ function reset() {
   selectYearContainer.style.display = "block";
   showGDPBySectorButton.style.width = "245px";
   showGDPOverYearButton.style.width = "245px";
+  showGDPOverYearButton.style.display = "block"
   SetDrawMargin(statsDrawContainer, statsLegendsContainer, "0px");
   infoParaghraphBottom.innerHTML = '';
+  RemoveDrawnData();
+  selectStateContainer.style.display = "none";
   
   const svgBox = document.getElementById('svg-stats');
   const legendsBox = document.getElementById('stats-legends');
