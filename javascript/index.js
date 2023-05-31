@@ -363,7 +363,7 @@ fetch("data.json")
                   UpdateDescription();
                   DrawPieChart(data, currentIdState, yearObject.options[yearObject.selectedIndex].text);
                 })
-              
+                
                 selectState.addEventListener("change", ()=>{
                  
                   let id = parseInt(selectState.options[selectState.selectedIndex].value);
