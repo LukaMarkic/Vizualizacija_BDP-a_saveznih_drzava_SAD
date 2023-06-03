@@ -1,0 +1,135 @@
+@import url("https://fonts.googleapis.com/css2?family=Josefin+Sans&family=Manrope&family=Pathway+Extreme:wght@300&family=Poltawski+Nowy&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Wix+Madefor+Display&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Staatliches&display=swap');
+
+
+* {
+    margin: 0;
+  }
+
+  .background {
+    fill: none;
+    pointer-events: all;
+  }
+
+  .feature {
+    fill: #ccc;
+    cursor: pointer;
+  }
+
+  .feature.active {
+    fill: orange;
+  }
+
+  .mesh {
+    z-index: 0;
+    fill: none;
+    stroke: #949494;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .select-year-container {
+    margin-top: 10px;
+    font-family: "Manrope", sans-serif;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .inline-dispaly {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .map-container {
+    border-right: solid rgba(178, 172, 172, 0.218) 1px;
+  }
+
+  .left-side-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .right-side-container {
+    background-color: rgba(255, 255, 255, 1);
+    padding: 0px 25px 5px 15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    padding-top: 1em;
+    z-index: 3;
+  }
+
+  .info-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+  }
+
+  .right-side-title {
+    font-family: "Josefin Sans", sans-serif;
+  }
+
+  .info-description-container {
+    margin-top: 2em;
+    font-family: "Pathway Extreme", sans-serif;
+    font-size: 1.1em;
+    text-align: justify;
+  }
+
+  #info-paraghraph-bottom {
+    font-family: "Pathway Extreme", sans-serif;
+    font-size: 1.1em;
+  }
+
+  .stats-info-buttons {
+    width: 100%;
+    display: flex;
+    justify-content: start;
+    gap: 10px;
+  }
+
+  .present-stat-button {
+    font-family: "Manrope", sans-serif;
+    font-size: 1.01em;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    width: 245px;
+    padding: 8px 12px;
+    background-color: #d6fbdf3b;
+    border: 1px solid #afafaf;
+    border-radius: 5px;
+  }
+
+  .present-stat-button:hover {
+    transition: 650ms;
+    background-color: #aefba8;
+    border: 1px solid #afafaf;
+    cursor: pointer;
+  }
+
+  .exit-view{
+    font-family: "Manrope", sans-serif;
+    font-size: 1.01em;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding: 8px 24px;
+    background-color: #fb46463b;
+    border: 1px solid #a9a6a6;
+    border-radius: 5px;
+    display: none;
+  }
+
+  .exit-view:hover{
+    transition: 650ms;
+    background-color: #ea4b4b;
+    cursor: pointer;
+  }
