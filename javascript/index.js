@@ -13,7 +13,7 @@ import { DrawPieChart } from './piechart.js';
 var w = window.innerWidth;
 var margin = { top: 0, bottom: 250, left: 10, right: 0 };
 var width = w*0.7 - margin.left - margin.right;
-var height = 1050 - margin.top - margin.bottom;
+var height = 1000 - margin.top - margin.bottom;
 var yearObject = document.getElementById("years");
 var scaleToRed = d3.scaleLinear().domain([0.85, 1]).range([0.15, 1]);
 var active = d3.select(null);
@@ -133,12 +133,12 @@ fetch("data.json")
           function UpdateDescription(){
           
             if(currentIdState === 0){
-              rightSideTitle.innerHTML = 'Prikaz raspodijele BDP-a Sjedinjenih američkih država na odgovarajuća gospodarstva';
+              rightSideTitle.innerHTML = 'Prikaz raspodjele BDP-a Sjedinjenih američkih država na odgovarajuća gospodarstva';
               infoParagraph.innerHTML= `Prikaz za odgovarajuću godinu moguće je dobiti jednostavnim odabirom godine.`;
               infoParaghraphBottom.innerHTML = `Ukupni BDP <span class="bold-span">Sjedinjenih američkih država</span> za ${yearObject.options[yearObject.selectedIndex].text}. godinu je <span class="bold-span">${GetStringReprensteationOfDollars(GetTotalGDP(data, currentIdState, yearObject.options[yearObject.selectedIndex].text), true)}</span>.<br/>
                                                 Gore prikazani kružni graf prikazuje udjel pojedinog gospodartva ukupnog BDP-a.<br/></br>`
             }else{
-              rightSideTitle.innerHTML = `Prikaz raspodijele BDP-a savezne države ${GetNameOfState(data, currentIdState)} na odgovarajuća gospodarstva`;
+              rightSideTitle.innerHTML = `Prikaz raspodjele BDP-a savezne države ${GetNameOfState(data, currentIdState)} na odgovarajuća gospodarstva`;
               infoParagraph.innerHTML= `Prikaz za odgovarajuću godinu moguće je dobiti jednostavnim odabirom godine.`;
               infoParaghraphBottom.innerHTML = `Ukupni BDP savezne države <span class="bold-span">${GetNameOfState(data, currentIdState)}</span> za ${yearObject.options[yearObject.selectedIndex].text}. godinu  je <span class="bold-span">${GetStringReprensteationOfDollars(GetTotalGDP(data, currentIdState, yearObject.options[yearObject.selectedIndex].text), true)}</span>.<br/> 
                                                 Gore prikazani kružni graf prikazuje udjel pojedinog gospodartva ukupnog BDP-a.<br/></br>`
