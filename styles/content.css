@@ -29,6 +29,7 @@
     align-items: center;
     justify-content: center;
     gap: 25px;
+    margin-top: -10px;
   }
 
   .stats-draw-container {
@@ -44,7 +45,7 @@
     padding-left: 10px;
     margin-left: 2.4em;
     font-family: "Pathway Extreme", sans-serif;
-    font-size: 1.1em;
+    font-size: 1em;
   }
 
   .legends-sectors {
@@ -98,7 +99,7 @@
     border-radius: 5px;
     justify-content: center;
     align-items: center;
-    padding: 0px 8px;
+    padding: 0px 4px;
     margin-top: 2px;
     margin-bottom: 2em;
   }
