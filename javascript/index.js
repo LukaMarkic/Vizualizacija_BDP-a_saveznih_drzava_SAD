@@ -12,15 +12,15 @@ import { DrawPieChart } from './piechart.js';
 //Decalarton of graph elements
 var w = window.innerWidth;
 var margin = { top: 0, bottom: 250, left: 10, right: 0 };
-var width = w*0.7 - margin.left - margin.right;
-var height = 1000 - margin.top - margin.bottom;
+var width = w*0.67 - margin.left - margin.right;
+var height = 850 - margin.top - margin.bottom;
 var yearObject = document.getElementById("years");
 var scaleToRed = d3.scaleLinear().domain([0.85, 1]).range([0.15, 1]);
 var active = d3.select(null);
 var projection = d3
-    .geoAlbersUsa().scale(1400)
+    .geoAlbersUsa().scale(1250)
       .translate([width / 2, height / 2]);
-infoContainer.style["width"] = `${w*0.26}px`;
+infoContainer.style["width"] = `${w*0.29}px`;
 
 
 var path = d3.geoPath().projection(projection);
@@ -52,7 +52,7 @@ const ShowDispalySpace = () => {
 
 const HideDisplaySpace = () => {
   d3.select(".left-side-container").transition().duration(750).style("width", `${width}px`);
-  d3.select(".info-container").transition().duration(750).style("width", `${w*0.26}px`);
+  d3.select(".info-container").transition().duration(750).style("width", `${w*0.29}px`);
   svg.transition().duration(750).attr("width", `${width}px`);
   exitViewButton.style.display = "none";
 }
@@ -136,12 +136,12 @@ fetch("data.json")
               rightSideTitle.innerHTML = 'Prikaz raspodjele BDP-a Sjedinjenih američkih država na odgovarajuća gospodarstva';
               infoParagraph.innerHTML= `Prikaz za odgovarajuću godinu moguće je dobiti jednostavnim odabirom godine.`;
               infoParaghraphBottom.innerHTML = `Ukupni BDP <span class="bold-span">Sjedinjenih američkih država</span> za ${yearObject.options[yearObject.selectedIndex].text}. godinu je <span class="bold-span">${GetStringReprensteationOfDollars(GetTotalGDP(data, currentIdState, yearObject.options[yearObject.selectedIndex].text), true)}</span>.<br/>
-                                                Gore prikazani kružni graf prikazuje udjel pojedinog gospodartva ukupnog BDP-a.<br/></br>`
+                                                <br/></br>`
             }else{
               rightSideTitle.innerHTML = `Prikaz raspodjele BDP-a savezne države ${GetNameOfState(data, currentIdState)} na odgovarajuća gospodarstva`;
               infoParagraph.innerHTML= `Prikaz za odgovarajuću godinu moguće je dobiti jednostavnim odabirom godine.`;
               infoParaghraphBottom.innerHTML = `Ukupni BDP savezne države <span class="bold-span">${GetNameOfState(data, currentIdState)}</span> za ${yearObject.options[yearObject.selectedIndex].text}. godinu  je <span class="bold-span">${GetStringReprensteationOfDollars(GetTotalGDP(data, currentIdState, yearObject.options[yearObject.selectedIndex].text), true)}</span>.<br/> 
-                                                Gore prikazani kružni graf prikazuje udjel pojedinog gospodartva ukupnog BDP-a.<br/></br>`
+                                                <br/></br>`
             }
           }
 

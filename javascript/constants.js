@@ -3,7 +3,7 @@ const infoParagraphContent = `
     država s prikazom bruto društvenog proizvoda pojedine savezne
     države.
     <br /><br />Klikom na pojedinu državu otvara se prozor iz kojeg je
-    mouće vidjeti raspodijelu BDP-a pojedine savezne države ne
+    moguće vidjeti raspodijelu BDP-a pojedine savezne države ne
     određene grane gospodarstva (poput: rudarstva, financija i sl.).
     Osim navedenog mogućo je pregeld promjene BDP-a kroz godine,
     točnije od 1997. do 2020. godine. Dodatno je omogućena i usporedba
