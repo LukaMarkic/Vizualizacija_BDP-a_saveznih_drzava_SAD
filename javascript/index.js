@@ -331,7 +331,7 @@ function reset() {
   active.classed("active", false);
   active = d3.select(null);
   currentIdState = 0;
-  rightSideTitle.innerHTML = `Interaktivna mapa SAD-a s ukupnim prikazom BDP-a`;
+  rightSideTitle.innerHTML = `Interaktivna mapa SAD-a s prikazom BDP-a saveznih država`;
   isShowPress = false;
   infoParagraph.innerHTML = infoParagraphContent;
   showGDPBySectorButton.style.display = "block";

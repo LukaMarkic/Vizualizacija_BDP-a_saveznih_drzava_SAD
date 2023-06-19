@@ -5,7 +5,7 @@ const infoParagraphContent = `
     <br /><br />Klikom na pojedinu državu otvara se prozor iz kojeg je
     moguće vidjeti raspodijelu BDP-a pojedine savezne države ne
     određene grane gospodarstva (poput: rudarstva, financija i sl.).
-    Osim navedenog mogućo je pregeld promjene BDP-a kroz godine,
+    Osim navedenog moguć je pregled promjene BDP-a kroz godine,
     točnije od 1997. do 2020. godine. Dodatno je omogućena i usporedba
     s drugom saveznom/im državama. <br /><br />
     Grafički prikaz raspodijele ukupnog BDP-a na pojedina gospodarstav
