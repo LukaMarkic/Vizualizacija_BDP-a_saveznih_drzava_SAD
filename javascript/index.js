@@ -87,7 +87,7 @@ const GetNameOfAllStates = (data) =>{
   return result;
 }
 
-
+//Select state
 const FillSelectStateOptions = (data, ids) =>{
   let states = GetNameOfAllStates(data);
   const result = states.filter(element => {
@@ -109,6 +109,7 @@ const FillSelectStateOptions = (data, ids) =>{
 if(addedStatesToLinearGraph.length >= 8) selectStateContainer.style.display = "none";
 }
 
+//Pie chart
 function RemoveDrawnData(){
   let statsContainer = document.querySelector('.stats-draw-container');
   let statslegends = document.querySelector('.stats-legends');
@@ -230,9 +231,9 @@ fetch("data.json")
                       }else{
                         totalGDPofCurrentState = 0;
                       }
-                      return (totalGDPofCurrentState/max >= 0.15) ? totalGDPofCurrentState/max : scaleToRed(1-totalGDPofCurrentState/max);
-                      //return (totalGDPofCurrentState/max >= 0.15) ? totalGDPofCurrentState/max : GetMinGDP(data, yearObject.options[yearObject.selectedIndex].text)/totalGDPofCurrentState;
-                    })
+                      return (totalGDPofCurrentState/max >= 0.15) ? totalGDPofCurrentState/max : scaleToRed(1-totalGDPofCurrentState/max);    
+                    }
+                  )
                 }
                 
                 UpdateFillStates();
@@ -350,10 +351,7 @@ function reset() {
 
 
   HideDisplaySpace();
-  g.transition()
-    .duration(750)
-    .style("stroke-width", "1.5px")
-    .attr("transform", "");
+
 }
 
 

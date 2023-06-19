@@ -61,7 +61,7 @@ function GetLinarGraphObject(data, id){
     ids.forEach(id => stateObjects.push(GetLinarGraphObject(data, id)));
       
         var years = Object.keys(stateObjects[0].values);
-        var GDPvalues;
+        
         var colorsPalette = ["#0f59d1", "#0ac43c", "#83cc96", "#7179f5", "#9c16ba", "#de7143", "#8f910a", "#d61132", "#161717"]
         var margin = { top: 50, bottom: 50, left: 110, right: 30 };
         var width = 1200 - margin.left - margin.right;
